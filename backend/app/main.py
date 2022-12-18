@@ -2,9 +2,12 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from app.core.config import settings
-
-
+from app.databases import sql
+from app.routers.authors import router as authors_router
 def get_application():
+    
+    sql.Base.metadata.create_all(bind=sql.engine)
+
     _app = FastAPI(title=settings.PROJECT_NAME)
 
     _app.add_middleware(
@@ -14,6 +17,7 @@ def get_application():
         allow_methods=["*"],
         allow_headers=["*"],
     )
+    _app.include_router(authors_router)
 
     return _app
 

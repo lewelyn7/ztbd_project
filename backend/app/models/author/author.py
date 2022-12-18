@@ -1,7 +1,8 @@
-from app.database import Base
+from app.databases.sql import Base
 from sqlalchemy import Column, String, Integer, BigInteger
 from sqlalchemy.orm import relationship
 from pydantic import BaseModel
+
  
 class AuthorDB(Base):
     __tablename__ = "authors"
@@ -11,7 +12,7 @@ class AuthorDB(Base):
     playtime_forever = Column(BigInteger)
     playtime_last_two_weeks = Column(BigInteger)
 
-    reviews = relationship("ReviewDB", back_populates="author", lazy="dynamic")
+    reviews = relationship("app.models.review.review.ReviewDB", back_populates="author", lazy="dynamic")
 
 class AuthorBase(BaseModel):
     num_of_games_owned: int

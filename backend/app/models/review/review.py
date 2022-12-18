@@ -1,10 +1,13 @@
-from app.database import Base
-from sqlalchemy import Column, String, Integer, Boolean, DateTime, Float, BigInteger
+from app.databases.sql import Base
+from sqlalchemy import Column, String, Integer, Boolean, DateTime, Float, BigInteger, ForeignKey
 from sqlalchemy.orm import relationship
 from pydantic import BaseModel
 from datetime import datetime
 
+from app.models.game.game import Game
+from app.models.author.author import Author
 class ReviewDB(Base):
+    __tablename__ = "reviews"
     id = Column(String(25), primary_key=True, index=True)
     language = Column(String(25))
     content = Column(String(1000))
@@ -20,8 +23,11 @@ class ReviewDB(Base):
     written_during_early_access = Column(Boolean)
     playtime_at_review = Column(BigInteger)
 
-    author = relationship("AuthorDB", back_populates="reviews")
-    game = relationship("GameDB", back_populates="reviews")
+    author_id = Column(String(25), ForeignKey("authors.id"))
+    author = relationship("app.models.author.author.AuthorDB", back_populates="reviews")
+
+    game_id = Column(String(25), ForeignKey("games.id"))
+    game = relationship("app.models.game.game.GameDB", back_populates="reviews")
 
 
 
@@ -40,6 +46,11 @@ class ReviewBase(BaseModel):
     received_for_free: bool
     written_during_early_access: bool
     playtime_at_review: int
+
+    author_id: int
+    game_id: int
+    author: Author
+    game: Game
 
 class ReviewCreate(ReviewBase):
     pass
