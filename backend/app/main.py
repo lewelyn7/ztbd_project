@@ -4,6 +4,8 @@ from fastapi.middleware.cors import CORSMiddleware
 from app.core.config import settings
 from app.databases import sql
 from app.routers.authors import router as authors_router
+from app.routers.games import router as games_router
+from app.routers.reviews import router as reviews_router
 def get_application():
     
     sql.Base.metadata.create_all(bind=sql.engine)
@@ -18,6 +20,8 @@ def get_application():
         allow_headers=["*"],
     )
     _app.include_router(authors_router)
+    _app.include_router(reviews_router)
+    _app.include_router(games_router)
 
     return _app
 

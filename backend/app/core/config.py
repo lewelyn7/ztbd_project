@@ -21,6 +21,7 @@ class Settings(BaseSettings):
     POSTGRES_PASSWORD: str
     POSTGRES_DB: str
     DATABASE_URI: str
+    MONGODB_URI: str
     # DATABASE_URI: Optional[PostgresDsn] = None
 
     # @validator("DATABASE_URI", pre=True)

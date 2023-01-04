@@ -6,10 +6,23 @@ from app.models.game.game import GameDB
 from app.daos.author.author import AuthorDAO, get_dao
 
 from fastapi import Depends
+
+from app.core.utils import raise_409
+
 router = APIRouter(prefix="/authors")
+
+
 @router.post("/", response_model=Author)
-def create_user(author: AuthorCreate, dao: AuthorDAO = Depends(get_dao)):
-    created_author = dao.save(author)
-    if created_author:
+def create_author(author: AuthorCreate, db: str, dao: AuthorDAO = Depends(get_dao)):
+    created_author = raise_409(dao.save)(author)
+    if not created_author:
         raise HTTPException(status_code=400, detail="already registered")
     return created_author
+
+@router.get("/{id}", response_model=Author)
+def get_author_by_id(id: str, db: str, dao: AuthorDAO = Depends(get_dao)):
+    author = dao.get_by_id(id)
+    return author
+
+def get_authors():
+    pass
