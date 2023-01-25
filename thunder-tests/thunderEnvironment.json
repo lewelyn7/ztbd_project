@@ -1,0 +1,12 @@
+[
+  {
+    "_id": "a59272eb-102f-4e43-b16b-9d2d0f19799b",
+    "name": "local",
+    "default": true,
+    "sortNum": 10000,
+    "created": "2023-01-25T20:39:20.472Z",
+    "modified": "2023-01-25T20:39:20.472Z",
+    "data": [],
+    "envFile": "../thunder-env.env"
+  }
+]

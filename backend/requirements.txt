@@ -6,3 +6,4 @@ psycop2-binary==2.9.5
 pymongo==4.3.3
 progress==1.6
 aiohttp==3.8.3
+python-dotenv

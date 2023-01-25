@@ -49,8 +49,8 @@ class ReviewMongo(BaseModel):
     written_during_early_access: bool
     playtime_at_review: int
 
-    author_id: ObjectId
-    game_id: ObjectId
+    author_id: str
+    game_id: str
 
     class Config:
         allow_population_by_field_name = True

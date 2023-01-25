@@ -76,7 +76,8 @@ class AuthorDAOMongo(AuthorDAO):
             raise ValueError("exists")
         self.collection.insert_one(author_json).inserted_id
         ret = self.get_by_id(author.id)
-        if not ret:
+        if ret is None:
+            print(ret)
             raise ValueError("couldnt get after add") 
         else:
             return ret

@@ -6,6 +6,7 @@ from app.models.review.review import ReviewDB
 from app.models.game.game import GameDB
 from app.daos.game.game import GameDAO, get_dao
 from app.core.utils import raise_409
+from fastapi import status
 
 from fastapi import Depends
 
@@ -20,8 +21,10 @@ def create_game(game: GameCreate, dao: GameDAO = Depends(get_dao)):
 
 @router.get("/{id}", response_model=Game)
 def get_author_by_id(id: str, dao: GameDAO = Depends(get_dao)):
-    author = dao.get_by_id(id)
-    return author
+    game = dao.get_by_id(id)
+    if game is None:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND)
+    return game
 
 def get_authors():
     pass

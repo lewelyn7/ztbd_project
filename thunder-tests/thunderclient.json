@@ -1,0 +1,179 @@
+[
+  {
+    "_id": "d5163c1b-4e72-476a-bf51-407c20e87740",
+    "colId": "9a94caba-9a97-468d-bbd3-bfb771303825",
+    "containerId": "",
+    "name": "get_authors",
+    "url": "{{APP_URL}}/authors/0?db={{DB_NAME}}",
+    "method": "GET",
+    "sortNum": 10000,
+    "created": "2023-01-25T20:38:54.109Z",
+    "modified": "2023-01-25T20:41:37.907Z",
+    "headers": [],
+    "params": [
+      {
+        "name": "db",
+        "value": "{{DB_NAME}}",
+        "isPath": false
+      }
+    ],
+    "tests": [
+      {
+        "type": "res-code",
+        "custom": "",
+        "action": "equal",
+        "value": "404"
+      }
+    ]
+  },
+  {
+    "_id": "e0ff6639-6e6d-4c36-b886-b87b9b5580a2",
+    "colId": "9a94caba-9a97-468d-bbd3-bfb771303825",
+    "containerId": "",
+    "name": "add_game",
+    "url": "{{APP_URL}}/games?db={{DB_NAME}}",
+    "method": "POST",
+    "sortNum": 18750,
+    "created": "2023-01-25T20:41:55.608Z",
+    "modified": "2023-01-25T20:49:19.890Z",
+    "headers": [],
+    "params": [
+      {
+        "name": "db",
+        "value": "{{DB_NAME}}",
+        "isPath": false
+      }
+    ],
+    "body": {
+      "type": "json",
+      "raw": "{\n  \"name\": \"string\",\n  \"id\": \"string\"\n}",
+      "form": []
+    },
+    "tests": [
+      {
+        "type": "res-code",
+        "custom": "",
+        "action": "equal",
+        "value": "409"
+      }
+    ]
+  },
+  {
+    "_id": "501c8313-c262-4966-867d-22aadf046aca",
+    "colId": "9a94caba-9a97-468d-bbd3-bfb771303825",
+    "containerId": "",
+    "name": "get_reviews",
+    "url": "{{APP_URL}}/reviews/0?db={{DB_NAME}}",
+    "method": "GET",
+    "sortNum": 15000,
+    "created": "2023-01-25T20:44:34.260Z",
+    "modified": "2023-01-25T20:44:56.050Z",
+    "headers": [],
+    "params": [
+      {
+        "name": "db",
+        "value": "{{DB_NAME}}",
+        "isPath": false
+      }
+    ],
+    "tests": [
+      {
+        "type": "res-code",
+        "custom": "",
+        "action": "equal",
+        "value": "404"
+      }
+    ]
+  },
+  {
+    "_id": "cb5537ab-bb84-4714-adf6-3670f2c2a541",
+    "colId": "9a94caba-9a97-468d-bbd3-bfb771303825",
+    "containerId": "",
+    "name": "get_games",
+    "url": "{{APP_URL}}/games/0?db={{DB_NAME}}",
+    "method": "GET",
+    "sortNum": 17500,
+    "created": "2023-01-25T20:45:05.919Z",
+    "modified": "2023-01-25T20:45:14.843Z",
+    "headers": [],
+    "params": [
+      {
+        "name": "db",
+        "value": "{{DB_NAME}}",
+        "isPath": false
+      }
+    ],
+    "tests": [
+      {
+        "type": "res-code",
+        "custom": "",
+        "action": "equal",
+        "value": "404"
+      }
+    ]
+  },
+  {
+    "_id": "7998dce5-f1cd-4020-9ef2-128e2c5eb2e4",
+    "colId": "9a94caba-9a97-468d-bbd3-bfb771303825",
+    "containerId": "",
+    "name": "add_review",
+    "url": "{{APP_URL}}/authors?db={{DB_NAME}}",
+    "method": "POST",
+    "sortNum": 28750,
+    "created": "2023-01-25T20:48:00.060Z",
+    "modified": "2023-01-25T20:48:00.060Z",
+    "headers": [],
+    "params": [
+      {
+        "name": "db",
+        "value": "{{DB_NAME}}",
+        "isPath": false
+      }
+    ],
+    "body": {
+      "type": "json",
+      "raw": "{\n  \"num_of_games_owned\": 0,\n  \"num_reviews\": 0,\n  \"playtime_forever\": 0,\n  \"playtime_last_two_weeks\": 0,\n  \"id\": \"string\"\n}",
+      "form": []
+    },
+    "tests": [
+      {
+        "type": "res-code",
+        "custom": "",
+        "action": "equal",
+        "value": "409"
+      }
+    ]
+  },
+  {
+    "_id": "b50b1394-440b-489a-b822-51fdd5c56a90",
+    "colId": "9a94caba-9a97-468d-bbd3-bfb771303825",
+    "containerId": "",
+    "name": "add_author Copy",
+    "url": "{{APP_URL}}/reviews?db={{DB_NAME}}",
+    "method": "POST",
+    "sortNum": 23750,
+    "created": "2023-01-25T20:48:59.553Z",
+    "modified": "2023-01-25T20:48:59.553Z",
+    "headers": [],
+    "params": [
+      {
+        "name": "db",
+        "value": "{{DB_NAME}}",
+        "isPath": false
+      }
+    ],
+    "body": {
+      "type": "json",
+      "raw": "{\n  \"language\": \"string\",\n  \"content\": \"string\",\n  \"timestamp_created\": \"2023-01-25T20:48:21.349Z\",\n  \"timestampe_updated\": \"2023-01-25T20:48:21.349Z\",\n  \"recommended\": true,\n  \"votes_helpful\": 0,\n  \"votes_funny\": 0,\n  \"weighted_vote_score\": 0,\n  \"comment_count\": 0,\n  \"steam_purchase\": true,\n  \"received_for_free\": true,\n  \"written_during_early_access\": true,\n  \"playtime_at_review\": 0,\n  \"author_id\": \"string\",\n  \"game_id\": \"string\",\n  \"id\": \"string\"\n}",
+      "form": []
+    },
+    "tests": [
+      {
+        "type": "res-code",
+        "custom": "",
+        "action": "equal",
+        "value": "409"
+      }
+    ]
+  }
+]

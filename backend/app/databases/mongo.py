@@ -1,11 +1,16 @@
 from bson import ObjectId
-from pymongo import MongoClient
+from pymongo import MongoClient, ASCENDING, HASHED
 from app.core.config import settings
 
 client = MongoClient(settings.MONGODB_URI)
 
 
 db = client.get_database("perf_tester")
+db['authors'].create_index([('id', ASCENDING)], unique=True)
+db['games'].create_index([('id', ASCENDING)], unique=True)
+db['reviews'].create_index([('id', ASCENDING)], unique=True)
+db['reviews'].create_index([('author_id', ASCENDING)])
+db['reviews'].create_index([('game_id', ASCENDING)])
 
 class PyObjectId(ObjectId):
     @classmethod

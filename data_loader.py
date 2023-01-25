@@ -6,12 +6,13 @@ import logging
 from progress.bar import Bar
 import aiohttp
 import asyncio
+from pydantic import BaseModel, validator
 
-BATCH_SIZE = 5000
+BATCH_SIZE = 4000
 ALL_RECORDS_COUNT = 48296895 / BATCH_SIZE
+csv.field_size_limit(100000000)
 
-@dataclass
-class Record:
+class Record(BaseModel):
     app_id: int
     app_name: str
     review_id: int
@@ -30,12 +31,27 @@ class Record:
     author_steamid: str
     author_num_games_owned: int
     author_num_reviews: int 
-    author_playtime_forever: str 
-    author_playtime_last_two_weeks: str
-    author_playtime_at_review: str
+    author_playtime_forever: int 
+    author_playtime_last_two_weeks: int
+    author_playtime_at_review: int
     author_last_played: str
 
-# session = requests.session()
+    @validator('author_playtime_at_review', 'author_playtime_last_two_weeks', 'author_playtime_forever', pre=True)
+    def to_int(cls, v):
+        if len(v) == 0:
+            return 0
+        return int(float(v))
+
+def handle_resp(resp: aiohttp.ClientResponse, record):
+    if resp.status == 200:
+        logging.info(f"added {record.app_name}") 
+    elif resp.status == 409:
+        logging.debug(f"already exists {record.app_name}")
+    else:
+        print(record)
+        print()
+        raise Exception(f"status code: {resp.status} body: {str(resp.json())}")
+
 def add_game(record: Record, url: str, db: str):
     resp = requests.post(f"{url}/games/", params={"db": db}, json={
         "name": record.app_name,
@@ -46,34 +62,25 @@ def add_game(record: Record, url: str, db: str):
     elif resp.status_code == 409:
         logging.debug(f"already exists {record.app_name}")
 
-# async def process_records
 
 async def add_game_async(session: aiohttp.ClientSession, record: Record, url: str, db: str):
     async with session.post(f"{url}/games/", params={"db": db}, json={
         "name": record.app_name,
         "id": record.app_id
     }) as resp:
-        if resp.status == 200:
-            logging.info(f"added {record.app_name}") 
-        elif resp.status == 409:
-            logging.debug(f"already exists {record.app_name}")
-        else:
-            raise Exception(f"status code: {resp.status}")
+        handle_resp(resp, record)
 
 async def add_author_async(session: aiohttp.ClientSession, record: Record, url: str, db: str):
-    async with session.post(f"{url}/authors/", params={"db": db}, json={
+    json_data = {
         "num_of_games_owned": record.author_num_games_owned,
         "num_reviews": record.author_num_reviews,
         "playtime_forever": record.author_playtime_forever,
         "playtime_last_two_weeks": record.author_playtime_last_two_weeks,
         "id": record.author_steamid,
-    }) as resp:
-        if resp.status == 200:
-            logging.info(f"added {record.app_name}") 
-        elif resp.status == 409:
-            logging.debug(f"already exists {record.app_name}")
-        else:
-            raise Exception(f"status code: {resp.status}")
+    }
+    # print(json_data)
+    async with session.post(f"{url}/authors/", params={"db": db}, json=json_data) as resp:
+        handle_resp(resp, record)
 
 async def add_review_async(session: aiohttp.ClientSession, record: Record, url: str, db: str):
     async with session.post(f"{url}/reviews/", params={"db": db}, json={
@@ -95,19 +102,23 @@ async def add_review_async(session: aiohttp.ClientSession, record: Record, url: 
         "id": record.review_id,
 
     }) as resp:
-        if resp.status == 200:
-            logging.info(f"added {record.app_name}") 
-        elif resp.status == 409:
-            logging.debug(f"already exists {record.app_name}")
-        else:
-            raise Exception(f"status code: {resp.status}")
+        handle_resp(resp, record)
 
-
+games_set = set()
+authors_set = set()
 async def batch_process(records_batch, url: str, db: str):
     async with aiohttp.ClientSession() as session:
         tasks = []
+        record: Record
         for record in records_batch:
-            tasks.append(asyncio.ensure_future(add_game_async(session, record, url, db)))
+            if not record.app_id in games_set:
+                tasks.append(asyncio.ensure_future(add_game_async(session, record, url, db)))
+                games_set.add(record.app_id)
+            if not record.author_steamid in authors_set:
+                tasks.append(asyncio.ensure_future(add_author_async(session, record, url, db)))
+                authors_set.add(record.author_steamid)
+
+            tasks.append(asyncio.ensure_future(add_review_async(session, record, url, db)))
         
         results = await asyncio.gather(*tasks)
         # print(results[0])
@@ -117,32 +128,40 @@ def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--file")
     parser.add_argument("--url")
+    parser.add_argument("--skip", type=int, default="0")
     args = parser.parse_args()
 
     logging.basicConfig(level=logging.INFO)
 
     records_batch = []
-    with open(args.file) as rfile:
-        reader = csv.DictReader(rfile)
-        with Bar('Processing', max=ALL_RECORDS_COUNT, suffix = '%(percent).1f%% - %(eta_td)s ') as bar:
-            for db in ["mongodb", "postgresql"]:
-                for i, row in enumerate(reader):
-                    logging.debug(f"processing - {db} - {i}")
-                    row.pop('')
-                    row = {k.replace(".", "_"):v for k,v in row.items()}
+    with open("info_file.txt", "a") as info_file:
+        with open(args.file) as rfile:
+            reader = csv.DictReader(rfile, delimiter=',', quotechar='"')
 
-                    record = Record(**row)
-                    records_batch.append(record)
-                    
-                    if len(records_batch)%BATCH_SIZE == 0:
-                        logging.info(f"processing batch - {i}")
-                        asyncio.run(batch_process(records_batch, args.url, db))
-                        records_batch = []
-                        bar.next()
+            with Bar('Processing', max=ALL_RECORDS_COUNT, suffix = '%(percent).1f%% - %(eta_td)s ') as bar:
+                for db in ["mongodb", "postgresql"]:
+                    for i, row in enumerate(reader):
+                        if i < args.skip:
+                            continue
+                        logging.debug(f"processing - {db} - {i}")
+                        row.pop('')
+                        row = {k.replace(".", "_"):v for k,v in row.items()}
+
+                        record = Record(**row)
+                        records_batch.append(record)
+                        
+                        if len(records_batch)%BATCH_SIZE == 0:
+                            info_file.write(str(i))
+                            info_file.write("\r\n")
+                            logging.info(f"processing batch - {i}")
+                            asyncio.run(batch_process(records_batch, args.url, db))
+                            records_batch = []
+                            bar.next()
 
 
                 
 
 
 if __name__ == "__main__":
+    logging.basicConfig(level=logging.WARN)
     main()

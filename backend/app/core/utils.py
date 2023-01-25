@@ -4,8 +4,12 @@ def raise_409(func):
 	
     def inner1(*args, **kwargs):
         try:
-            func(*args, **kwargs)
+            return func(*args, **kwargs)
         except ValueError as e:
-            raise HTTPException(status_code=status.HTTP_409_CONFLICT)
+            args = e.args
+            if 'exists' in e.args:
+                raise HTTPException(status_code=status.HTTP_409_CONFLICT)
+            else:
+                raise e
 
     return inner1
