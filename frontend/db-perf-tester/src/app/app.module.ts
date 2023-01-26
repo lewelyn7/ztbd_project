@@ -12,6 +12,7 @@ import { TestCaseComponent } from './components/test-case/test-case.component'
 import {MatProgressSpinnerModule} from '@angular/material/progress-spinner'; 
 import { HttpClientModule } from '@angular/common/http';
 import {MatInputModule} from '@angular/material/input'; 
+import {MatTableModule} from '@angular/material/table'; 
 import { BoxChartModule } from '@swimlane/ngx-charts';
 @NgModule({
   declarations: [
@@ -30,7 +31,8 @@ import { BoxChartModule } from '@swimlane/ngx-charts';
     HttpClientModule,
     FormsModule,
     MatInputModule,
-    BoxChartModule
+    BoxChartModule,
+    MatTableModule
   ],
   providers: [],
   bootstrap: [AppComponent]

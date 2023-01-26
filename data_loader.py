@@ -118,7 +118,7 @@ async def batch_process(records_batch, url: str, db: str):
                 tasks.append(asyncio.ensure_future(add_author_async(session, record, url, db)))
                 authors_set.add(record.author_steamid)
 
-            tasks.append(asyncio.ensure_future(add_review_async(session, record, url, db)))
+            # tasks.append(asyncio.ensure_future(add_review_async(session, record, url, db)))
         
         results = await asyncio.gather(*tasks)
         # print(results[0])

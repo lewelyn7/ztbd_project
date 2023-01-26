@@ -13,6 +13,7 @@ import { map } from 'rxjs/operators';
 @Injectable()
 export class TestCaseComponent {
   @Input() testName!: string;
+  @Input() description!: string;
   @Input() staticSettings!: StaticSettings;
   @Input() iterations!: number
   @Output() testResults = new EventEmitter<ChartResult>();

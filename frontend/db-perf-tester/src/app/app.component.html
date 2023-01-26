@@ -5,7 +5,7 @@
 </mat-toolbar>
 </p>
 <div id="mainContent">
-<mat-card class="card">
+<mat-card id="firstCard" class="card">
   <mat-card-header>
     <mat-card-title>Test cases</mat-card-title>
   </mat-card-header>
@@ -16,22 +16,65 @@
     <app-test-case 
     *ngFor="let case of testCases"
     [testName]="case.name"
+    [description]="case.description"
     [staticSettings]="case.staticSettings"
     [iterations]="iterations"
     (testResults)="onTestResult($event)"
     />
 
-    <mat-divider></mat-divider>
   </mat-card-content>
 </mat-card>
-<mat-card class="card">
+<mat-card class="card chartCard">
   <mat-card-header>
     <mat-card-title>Results</mat-card-title>
   </mat-card-header>
     <mat-card-content>
       <ngx-charts-box-chart
       [results]="testResults.data"
+      [xAxisLabel]="'databases'"
+      [yAxisLabel]="'time [ms]'"
+      [view]="chartSize"
       ></ngx-charts-box-chart>
+    </mat-card-content>
+</mat-card>
+<mat-card class="card">
+  <mat-card-header>
+    <mat-card-title>Results table</mat-card-title>
+  </mat-card-header>
+    <mat-card-content>
+      <table mat-table [dataSource]="tableData" class="mat-elevation-z3">
+
+        <!--- Note that these columns can be defined in any order.
+              The actual rendered columns are set as a property on the row definition" -->
+      
+        <!-- Position Column -->
+        <ng-container matColumnDef="database">
+          <th mat-header-cell *matHeaderCellDef> database </th>
+          <td mat-cell *matCellDef="let element"> {{element.database}} </td>
+        </ng-container>
+      
+        <!-- Name Column -->
+        <ng-container matColumnDef="min">
+          <th mat-header-cell *matHeaderCellDef> min </th>
+          <td mat-cell *matCellDef="let element"> {{element.min.toFixed(2)}} </td>
+        </ng-container>
+      
+        <!-- Weight Column -->
+        <ng-container matColumnDef="max">
+          <th mat-header-cell *matHeaderCellDef> max </th>
+          <td mat-cell *matCellDef="let element"> {{element.max.toFixed(2)}} </td>
+        </ng-container>
+      
+        <!-- Symbol Column -->
+        <ng-container matColumnDef="mediana">
+          <th mat-header-cell *matHeaderCellDef> mediana </th>
+          <td mat-cell *matCellDef="let element"> {{element.mediana}} </td>
+        </ng-container>
+      
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+      </table>
+
     </mat-card-content>
 </mat-card>
 </div>

@@ -2,3 +2,4 @@ env/
 raw_data/archive.zip
 raw_data/steam_reviews.csv
 sql_app.db
+backend/static

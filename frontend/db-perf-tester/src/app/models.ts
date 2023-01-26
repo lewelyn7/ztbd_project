@@ -4,6 +4,7 @@ export type StaticSettings = {
 
 export type TestCase = {
     name: string
+    description: string
     staticSettings: StaticSettings
 }
 
