@@ -8,7 +8,7 @@ from fastapi import Depends
 
 from app.core.utils import raise_409
 
-router = APIRouter(prefix="/reviews")
+router = APIRouter(prefix="/api/reviews")
 
 @router.post("/", response_model=Review)
 def create_review(review: ReviewCreate, dao: ReviewDAO = Depends(get_dao)):

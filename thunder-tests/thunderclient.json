@@ -8,7 +8,7 @@
     "method": "GET",
     "sortNum": 10000,
     "created": "2023-01-25T20:38:54.109Z",
-    "modified": "2023-01-25T20:41:37.907Z",
+    "modified": "2023-01-25T22:01:22.981Z",
     "headers": [],
     "params": [
       {
@@ -173,6 +173,105 @@
         "custom": "",
         "action": "equal",
         "value": "409"
+      }
+    ]
+  },
+  {
+    "_id": "61ec28cf-aadf-44db-9369-4071f52a8bc1",
+    "colId": "9a94caba-9a97-468d-bbd3-bfb771303825",
+    "containerId": "",
+    "name": "get_authors Copy",
+    "url": "{{APP_URL}}/authors/string?db={{DB_NAME}}",
+    "method": "GET",
+    "sortNum": 12500,
+    "created": "2023-01-25T22:01:26.931Z",
+    "modified": "2023-01-25T22:01:57.577Z",
+    "headers": [],
+    "params": [
+      {
+        "name": "db",
+        "value": "{{DB_NAME}}",
+        "isPath": false
+      }
+    ],
+    "tests": [
+      {
+        "type": "res-code",
+        "custom": "",
+        "action": "equal",
+        "value": "200"
+      },
+      {
+        "type": "json-query",
+        "custom": "json.id",
+        "action": "equal",
+        "value": "string"
+      }
+    ]
+  },
+  {
+    "_id": "8c7b0f2f-9f00-47b4-ac2b-fc840da53a40",
+    "colId": "9a94caba-9a97-468d-bbd3-bfb771303825",
+    "containerId": "",
+    "name": "get_reviews Copy",
+    "url": "{{APP_URL}}/reviews/string?db={{DB_NAME}}",
+    "method": "GET",
+    "sortNum": 16250,
+    "created": "2023-01-25T22:02:31.314Z",
+    "modified": "2023-01-25T22:02:52.112Z",
+    "headers": [],
+    "params": [
+      {
+        "name": "db",
+        "value": "{{DB_NAME}}",
+        "isPath": false
+      }
+    ],
+    "tests": [
+      {
+        "type": "res-code",
+        "custom": "",
+        "action": "equal",
+        "value": "200"
+      },
+      {
+        "type": "json-query",
+        "custom": "json.id",
+        "action": "equal",
+        "value": "string"
+      }
+    ]
+  },
+  {
+    "_id": "20a70fc0-64cf-4724-916d-ba550b8424c7",
+    "colId": "9a94caba-9a97-468d-bbd3-bfb771303825",
+    "containerId": "",
+    "name": "get_games Copy",
+    "url": "{{APP_URL}}/games/string?db={{DB_NAME}}",
+    "method": "GET",
+    "sortNum": 18125,
+    "created": "2023-01-25T22:02:34.330Z",
+    "modified": "2023-01-25T22:03:15.802Z",
+    "headers": [],
+    "params": [
+      {
+        "name": "db",
+        "value": "{{DB_NAME}}",
+        "isPath": false
+      }
+    ],
+    "tests": [
+      {
+        "type": "res-code",
+        "custom": "",
+        "action": "equal",
+        "value": "200"
+      },
+      {
+        "type": "json-query",
+        "custom": "json.id",
+        "action": "equal",
+        "value": "string"
       }
     ]
   }

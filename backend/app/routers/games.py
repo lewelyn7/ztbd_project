@@ -10,7 +10,7 @@ from fastapi import status
 
 from fastapi import Depends
 
-router = APIRouter(prefix="/games")
+router = APIRouter(prefix="/api/games")
 
 @router.post("/", response_model=Game)
 def create_game(game: GameCreate, dao: GameDAO = Depends(get_dao)):

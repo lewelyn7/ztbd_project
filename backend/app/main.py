@@ -5,6 +5,7 @@ from app.databases import sql
 from app.routers.authors import router as authors_router
 from app.routers.games import router as games_router
 from app.routers.reviews import router as reviews_router
+from app.routers.tests import router as tests_router
 from fastapi.exceptions import RequestValidationError
 from fastapi.responses import JSONResponse
 from fastapi.requests import Request
@@ -26,6 +27,7 @@ def get_application():
     _app.include_router(authors_router)
     _app.include_router(reviews_router)
     _app.include_router(games_router)
+    _app.include_router(tests_router)
 
     return _app
 

@@ -41,10 +41,16 @@ class GameDAOSql(GameDAO):
 
     def get_by_id(self, id: str):
         game_sql = self.session.query(GameDB).filter(GameDB.id == id).first()
+        if not game_sql:
+            return None
         return Game.from_orm(game_sql)
 
     def save(self, game: GameCreate):
         game_sql = GameDB(**game.dict())
+        if self.get_by_id(game.id):
+            raise ValueError("exists")
+
+
         self.session.add(game_sql)
         self.session.commit()
         self.session.refresh(game_sql)

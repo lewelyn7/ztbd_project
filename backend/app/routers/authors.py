@@ -9,7 +9,7 @@ from fastapi import Depends
 
 from app.core.utils import raise_409
 
-router = APIRouter(prefix="/authors")
+router = APIRouter(prefix="/api/authors")
 
 
 @router.post("/", response_model=Author)

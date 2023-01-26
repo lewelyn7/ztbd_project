@@ -27,10 +27,10 @@ class ReviewDB(Base):
     playtime_at_review = Column(BigInteger)
 
     author_id = Column(String(25), ForeignKey("authors.id"))
-    # author = relationship("app.models.author.author.AuthorDB", back_populates="reviews")
+    author = relationship("app.models.author.author.AuthorDB", back_populates="reviews")
 
     game_id = Column(String(25), ForeignKey("games.id"))
-    # game = relationship("app.models.game.game.GameDB", back_populates="reviews")
+    game = relationship("app.models.game.game.GameDB", back_populates="reviews")
 
 class ReviewMongo(BaseModel):
     mongo_id: ObjectId = Field(default_factory=PyObjectId, alias="_id")

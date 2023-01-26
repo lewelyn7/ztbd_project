@@ -128,6 +128,7 @@ def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--file")
     parser.add_argument("--url")
+    parser.add_argument("--db")
     parser.add_argument("--skip", type=int, default="0")
     args = parser.parse_args()
 
@@ -139,7 +140,7 @@ def main():
             reader = csv.DictReader(rfile, delimiter=',', quotechar='"')
 
             with Bar('Processing', max=ALL_RECORDS_COUNT, suffix = '%(percent).1f%% - %(eta_td)s ') as bar:
-                for db in ["mongodb", "postgresql"]:
+                for db in [args.db]:
                     for i, row in enumerate(reader):
                         if i < args.skip:
                             continue

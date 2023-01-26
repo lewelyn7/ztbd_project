@@ -39,10 +39,14 @@ class AuthorDAOSql(AuthorDAO):
 
     def get_by_id(self, id: str) -> Author:
         author_sql = self.session.query(AuthorDB).filter(AuthorDB.id == id).first()
+        if not author_sql:
+            return None
         return Author.from_orm(author_sql)
 
     def save(self, author: AuthorCreate):
         author_sql = AuthorDB(**author.dict())
+        if self.get_by_id(author.id):
+            raise ValueError("exists")
         self.session.add(author_sql)
         self.session.commit()
         self.session.refresh(author_sql)

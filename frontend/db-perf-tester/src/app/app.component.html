@@ -1,0 +1,38 @@
+<p>
+  <mat-toolbar color="primary">
+  <span>DB Performance Tester</span>
+  <span class="example-spacer"></span>
+</mat-toolbar>
+</p>
+<div id="mainContent">
+<mat-card class="card">
+  <mat-card-header>
+    <mat-card-title>Test cases</mat-card-title>
+  </mat-card-header>
+  <mat-card-content>
+    <mat-form-field class="example-form-field">
+      <mat-label>iterations</mat-label>
+    <input matInput type="number" [(ngModel)]="iterations"></mat-form-field>
+    <app-test-case 
+    *ngFor="let case of testCases"
+    [testName]="case.name"
+    [staticSettings]="case.staticSettings"
+    [iterations]="iterations"
+    (testResults)="onTestResult($event)"
+    />
+
+    <mat-divider></mat-divider>
+  </mat-card-content>
+</mat-card>
+<mat-card class="card">
+  <mat-card-header>
+    <mat-card-title>Results</mat-card-title>
+  </mat-card-header>
+    <mat-card-content>
+      <ngx-charts-box-chart
+      [results]="testResults.data"
+      ></ngx-charts-box-chart>
+    </mat-card-content>
+</mat-card>
+</div>
+<router-outlet></router-outlet>

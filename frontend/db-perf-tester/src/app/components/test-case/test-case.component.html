@@ -1,0 +1,9 @@
+<div class="main">
+<!-- <div class="txt"> -->
+<p>{{ testName }}</p>
+<!-- </div> -->
+<button mat-raised-button color="primary" (click)="runTest()">Start test </button>
+<div class="spinner">
+<mat-spinner *ngIf="loading" diameter="30" />
+</div>
+</div>

@@ -25,6 +25,10 @@ class ReviewDAO(ABC):
     def delete(self, id: str):
         pass
 
+    @abstractmethod
+    def search(self, query: t.Dict[str,str], limit: int = 10) -> t.List[Review]:
+        pass
+
 def get_dao(db:str, session: Session = Depends(get_session)):
     if db == "postgresql":
         dao = ReviewDAOSql(session)
@@ -50,6 +54,8 @@ class ReviewDAOSql(ReviewDAO):
 
     def save(self, review: ReviewCreate):
         review_sql = ReviewDB(**review.dict())
+        if self.get_by_id(review.id):
+            raise ValueError("exists")
         self.session.add(review_sql)
         self.session.commit()
         self.session.refresh(review_sql)
@@ -57,6 +63,14 @@ class ReviewDAOSql(ReviewDAO):
     def delete(self, id: str):
         review_sql = self.session.query(ReviewDB).filter(ReviewDB.id == id).first()
         self.session.delete(review_sql)
+    
+    def search(self, query: t.Dict[str, str], limit: int = 10) -> t.List[Review]:
+        q = self.session.query(ReviewDB)
+        for attr, value in query.items():
+            q = q.filter(getattr(ReviewDB, attr) == value)
+        q_results = q.limit(limit).all()
+        results = [Review.from_orm(r) for r in q_results]
+        return results
 
 class ReviewDAOMongo(ReviewDAO):
 
@@ -88,3 +102,8 @@ class ReviewDAOMongo(ReviewDAO):
 
     def delete(self, id: str):
         raise NotImplementedError()
+
+    def search(self, query: t.Dict[str, str], limit: int = 10) -> t.List[Review]:
+        find_result = self.collection.find(query, limit=limit)
+        result = [Review.from_orm(r) for r in find_result]
+        return result
