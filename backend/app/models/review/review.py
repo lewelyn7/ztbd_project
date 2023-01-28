@@ -13,7 +13,7 @@ class ReviewDB(Base):
     __tablename__ = "reviews"
     id = Column(String(25), primary_key=True, index=True)
     language = Column(String(25))
-    content = Column(String(1000))
+    content = Column(String(2000))
     timestamp_created = Column(DateTime)
     timestampe_updated = Column(DateTime)
     recommended = Column(Boolean)
@@ -80,6 +80,9 @@ class ReviewBase(BaseModel):
     # game: Game
 
     id: str
+
+class ReviewRedis(ReviewBase):
+    pass
 
 class ReviewCreate(ReviewBase):
     pass

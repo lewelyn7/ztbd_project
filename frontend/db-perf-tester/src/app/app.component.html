@@ -53,13 +53,11 @@
           <td mat-cell *matCellDef="let element"> {{element.database}} </td>
         </ng-container>
       
-        <!-- Name Column -->
         <ng-container matColumnDef="min">
           <th mat-header-cell *matHeaderCellDef> min </th>
           <td mat-cell *matCellDef="let element"> {{element.min.toFixed(2)}} </td>
         </ng-container>
       
-        <!-- Weight Column -->
         <ng-container matColumnDef="max">
           <th mat-header-cell *matHeaderCellDef> max </th>
           <td mat-cell *matCellDef="let element"> {{element.max.toFixed(2)}} </td>
@@ -77,12 +75,21 @@
           <td mat-cell *matCellDef="let element"> {{element.std_dev.toFixed(2)}} </td>
         </ng-container>
       
-        <!-- Symbol Column -->
-        <ng-container matColumnDef="mediana">
-          <th mat-header-cell *matHeaderCellDef> mediana </th>
-          <td mat-cell *matCellDef="let element"> {{element.mediana}} </td>
+        <ng-container matColumnDef="q25">
+          <th mat-header-cell *matHeaderCellDef> q25 </th>
+          <td mat-cell *matCellDef="let element"> {{element.q25.toFixed(2)}} </td>
         </ng-container>
       
+        <ng-container matColumnDef="q50">
+          <th mat-header-cell *matHeaderCellDef> q50 </th>
+          <td mat-cell *matCellDef="let element"> {{element.q50.toFixed(2)}} </td>
+        </ng-container>
+        
+        <ng-container matColumnDef="q75">
+          <th mat-header-cell *matHeaderCellDef> q75 </th>
+          <td mat-cell *matCellDef="let element"> {{element.q75.toFixed(2)}} </td>
+        </ng-container>
+
         <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
         <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
       </table>

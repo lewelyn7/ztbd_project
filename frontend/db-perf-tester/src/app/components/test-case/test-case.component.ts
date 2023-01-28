@@ -26,7 +26,7 @@ export class TestCaseComponent {
   runTest(){
     this.loading = true
     console.log('starting', this.iterations)
-    let dbs = ["mongodb", "postgresql"];
+    let dbs = ["mongodb", "postgresql", "redis"];
     let resultObservables: Observable<any>[] = []
     for(let db of dbs){
       let obs = this.http.get(this.staticSettings.url, {"params": {"iterations": this.iterations, "db": db}}).pipe(map(v => {return {db, v}}))

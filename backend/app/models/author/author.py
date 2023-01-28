@@ -29,6 +29,8 @@ class AuthorMongo(BaseModel):
         arbitrary_types_allowed = True
         json_encoders = {ObjectId: str}
 
+    
+
 
 class AuthorBase(BaseModel):
     num_of_games_owned: int
@@ -36,6 +38,9 @@ class AuthorBase(BaseModel):
     playtime_forever: int
     playtime_last_two_weeks: int
     id: str
+
+class AuthorRedis(AuthorBase):
+    pass
 
 class AuthorCreate(AuthorBase):
     pass
