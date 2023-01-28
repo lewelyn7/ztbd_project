@@ -16,9 +16,9 @@ export class AppComponent {
   title = 'db-perf-tester';
   chartSize: [number, number] = [700, 600]
   iterations: number = 10
-  displayedColumns: string[] = ['database', 'max', 'min'];
+  displayedColumns: string[] = ['database', 'max', 'min', 'mean', 'std_dev'];
   tableData = [
-    {database: "mongodb", "max": 20, "min": 30}
+    {database: "mongodb", "max": -1, "min": -1, "mean": -1, "std_dev": -1}
   ]
   testResults: ChartResult = {data:[
     {
@@ -53,6 +53,20 @@ export class AppComponent {
         staticSettings:{
           url: environment.backendUrl + 'tests/1'
         }
+      },
+      {
+        name: "Case2",
+        description: "Not exist element",
+        staticSettings:{
+          url: environment.backendUrl + 'tests/2'
+        }
+      },
+      {
+        name: "Case3",
+        description: "Find review by part of opinion",
+        staticSettings:{
+          url: environment.backendUrl + 'tests/3'
+        }
       }
     ]
   
@@ -67,12 +81,17 @@ export class AppComponent {
   chartResultToTableData(result: ChartResult){
     let data = []
     for(let series of result.data){
-      let max = Math.max(...series.series.map(v => v.value))
-      let min = Math.min(...series.series.map(v => v.value))
+      let helper = [...series.series.map(v => v.value)]
+      const max = Math.max(...series.series.map(v => v.value))
+      const min = Math.min(...series.series.map(v => v.value))
+      const mean = helper.reduce((a,b) => a+b, 0) / helper.length
+      const std_dev = Math.sqrt(helper.map(x => Math.pow(x - mean, 2)).reduce((a, b) => a + b) / helper.length)
       data.push({
         database: series.name,
         max: max,
-        min: min
+        min: min,
+        mean: mean,
+        std_dev: std_dev
       })
     }
     return data

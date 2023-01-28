@@ -60,3 +60,28 @@ def test_case1(iterations: int, common_settings: CommonSettings = Depends(get_co
         times.append(time_in_ms)
 
     return SingleDbResult(times=times)
+
+@router.get("/2", response_model=SingleDbResult)
+def test_case2(iterations: int, common_settings: CommonSettings = Depends(get_common_settings)):
+    times: t.List[float]= []
+    for i in range(iterations):
+        start = time.time()
+        result = common_settings.reviews_dao.search({"language": "not exist"})
+        # print(len(result))
+        end = time.time()        
+        time_in_ms = (end - start) * 1000
+        times.append(time_in_ms)
+
+    return SingleDbResult(times=times)
+
+@router.get("/3", response_model=SingleDbResult)
+def test_case3(iterations: int, common_settings: CommonSettings = Depends(get_common_settings)):
+    times: t.List[float]= []
+    for i in range(iterations):
+        start = time.time()
+        result = common_settings.reviews_dao.search({"language": "\"ukr\""})
+        end = time.time()        
+        time_in_ms = (end - start) * 1000
+        times.append(time_in_ms)
+
+    return SingleDbResult(times=times)
