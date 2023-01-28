@@ -11,7 +11,10 @@ from app.models.test_results.test_results import SingleDbResult
 from fastapi import Depends
 from app.databases.redis import get_redis, RedisDbs
 from app.databases.mongo import db as mongodb
-from app.databases.sql import get_session
+from app.databases.sql import get_session, Session
+from app.models.review.review import ReviewDB
+from app.models.game.game import GameDB
+from app.models.author.author import AuthorDB
 
 from app.core.utils import raise_409
 from dataclasses import dataclass
@@ -65,7 +68,7 @@ def test_case1(iterations: int, common_settings: CommonSettings = Depends(get_co
     return SingleDbResult(times=times)
 
 @router.get("/stats")
-def get_stats():
+def get_stats(sql_session: Session = Depends(get_session)):
     stats = {
         'redis': {
             'reviews' : {},
@@ -84,10 +87,13 @@ def get_stats():
         }
 
     }
+    stats['postgresql']['reviews']['entities'] = sql_session.query(ReviewDB).count()
+    stats['postgresql']['games']['entities'] = sql_session.query(GameDB).count()
+    stats['postgresql']['authors']['entities'] = sql_session.query(AuthorDB).count()
 
     stats['redis']['reviews']['entities'] = get_redis(RedisDbs.REVIEWS).info()[f'db{RedisDbs.REVIEWS.value}']['keys']
-    stats['redis']['games']['entities'] = get_redis(RedisDbs.GAMES).info()[f'db{RedisDbs.GAMES.value}']['keys']
-    stats['redis']['authors']['entities'] = get_redis(RedisDbs.AUTHORS).info()[f'db{RedisDbs.AUTHORS.value}']['keys']
+    # stats['redis']['games']['entities'] = get_redis(RedisDbs.GAMES).info()[f'db{RedisDbs.GAMES.value}']['keys']
+    # stats['redis']['authors']['entities'] = get_redis(RedisDbs.AUTHORS).info()[f'db{RedisDbs.AUTHORS.value}']['keys']
 
     stats['mongodb']['reviews']['entities'] = mongodb.reviews.estimated_document_count()
     stats['mongodb']['games']['entities'] = mongodb.games.estimated_document_count()

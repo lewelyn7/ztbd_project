@@ -1,12 +1,12 @@
 version: "3.8"
 
 services:
-  # app:
-  #   build: ./backend
-  #   env_file:
-  #     - ./backend/.env
-  #   ports:
-  #     - "8000:8000"
+  app:
+    build: ./backend
+    env_file:
+      - ./backend/.env
+    ports:
+      - "8000:8000"
 
   redis-database:
     image: redislabs/redisearch

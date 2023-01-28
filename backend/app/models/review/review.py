@@ -17,8 +17,8 @@ class ReviewDB(Base):
     timestamp_created = Column(DateTime)
     timestampe_updated = Column(DateTime)
     recommended = Column(Boolean)
-    votes_helpful = Column(Integer)
-    votes_funny = Column(Integer)
+    votes_helpful = Column(BigInteger)
+    votes_funny = Column(BigInteger)
     weighted_vote_score = Column(Float)
     comment_count = Column(Float)
     steam_purchase = Column(Boolean)
@@ -26,10 +26,10 @@ class ReviewDB(Base):
     written_during_early_access = Column(Boolean)
     playtime_at_review = Column(BigInteger)
 
-    author_id = Column(String(25), ForeignKey("authors.id"))
+    author_id = Column(String(25), ForeignKey("authors.id"), index=True)
     author = relationship("app.models.author.author.AuthorDB", back_populates="reviews")
 
-    game_id = Column(String(25), ForeignKey("games.id"))
+    game_id = Column(String(25), ForeignKey("games.id"), index=True)
     game = relationship("app.models.game.game.GameDB", back_populates="reviews")
 
 class ReviewMongo(BaseModel):
