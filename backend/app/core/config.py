@@ -22,6 +22,8 @@ class Settings(BaseSettings):
     POSTGRES_DB: str
     DATABASE_URI: str
     MONGODB_URI: str
+    REDIS_HOST: str
+    REDIS_PORT: int
     # DATABASE_URI: Optional[PostgresDsn] = None
 
     # @validator("DATABASE_URI", pre=True)

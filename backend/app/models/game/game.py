@@ -27,6 +27,9 @@ class GameBase(BaseModel):
    name: str
    id: str
 
+class GameRedis(GameBase):
+   pass
+
 class Game(GameBase):
 
    class Config:

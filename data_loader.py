@@ -8,7 +8,7 @@ import aiohttp
 import asyncio
 from pydantic import BaseModel, validator
 
-BATCH_SIZE = 4000
+BATCH_SIZE = 10
 ALL_RECORDS_COUNT = 48296895 / BATCH_SIZE
 csv.field_size_limit(100000000)
 
@@ -41,6 +41,10 @@ class Record(BaseModel):
         if len(v) == 0:
             return 0
         return int(float(v))
+
+    @validator('review', pre=True)
+    def truncate(cls, v):
+        return v[:1999]
 
 def handle_resp(resp: aiohttp.ClientResponse, record):
     if resp.status == 200:
@@ -118,7 +122,7 @@ async def batch_process(records_batch, url: str, db: str):
                 tasks.append(asyncio.ensure_future(add_author_async(session, record, url, db)))
                 authors_set.add(record.author_steamid)
 
-            # tasks.append(asyncio.ensure_future(add_review_async(session, record, url, db)))
+            tasks.append(asyncio.ensure_future(add_review_async(session, record, url, db)))
         
         results = await asyncio.gather(*tasks)
         # print(results[0])
@@ -135,7 +139,7 @@ def main():
     logging.basicConfig(level=logging.INFO)
 
     records_batch = []
-    with open("info_file.txt", "a") as info_file:
+    with open(f"info_file{args.db}.txt", "a") as info_file:
         with open(args.file) as rfile:
             reader = csv.DictReader(rfile, delimiter=',', quotechar='"')
 

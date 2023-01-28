@@ -16,9 +16,9 @@ export class AppComponent {
   title = 'db-perf-tester';
   chartSize: [number, number] = [700, 600]
   iterations: number = 10
-  displayedColumns: string[] = ['database', 'max', 'min'];
+  displayedColumns: string[] = ['database', 'max', 'min', 'mean', 'q25', 'q50', 'q75'];
   tableData = [
-    {database: "mongodb", "max": 20, "min": 30}
+    {database: "mongodb", "max": 20, "min": 30, "mean": 10, "q25": 10, "q50": 10, "q75": 10}
   ]
   testResults: ChartResult = {data:[
     {
@@ -67,14 +67,38 @@ export class AppComponent {
   chartResultToTableData(result: ChartResult){
     let data = []
     for(let series of result.data){
-      let max = Math.max(...series.series.map(v => v.value))
-      let min = Math.min(...series.series.map(v => v.value))
+      let values = series.series.map(v => v.value);
+      let max = Math.max(...values);
+      let min = Math.min(...values);
+      let sum = values.reduce((a, b) => a + b, 0);
+      let mean = sum / values.length;
+      let q25 = quantile(values, .25);
+      let q50 = quantile(values, .50);
+      let q75 = quantile(values, .75);
       data.push({
         database: series.name,
         max: max,
-        min: min
+        min: min,
+        mean: mean,
+        q25: q25,
+        q50: q50,
+        q75: q75
       })
     }
     return data
   }
 }
+
+const asc = arr => arr.sort((a, b) => a - b);
+
+const quantile = (arr, q) => {
+  const sorted = asc(arr);
+  const pos = (sorted.length - 1) * q;
+  const base = Math.floor(pos);
+  const rest = pos - base;
+  if (sorted[base + 1] !== undefined) {
+      return sorted[base] + rest * (sorted[base + 1] - sorted[base]);
+  } else {
+      return sorted[base];
+  }
+};
