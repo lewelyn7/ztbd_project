@@ -28,6 +28,7 @@ redisInstanceReviews = redisInstanceAuthors
 schema = (
     TextField("$.author_id", as_name="author_id"),
     TextField("$.game_id", as_name="game_id"),
+    TextField("$.content", as_name="content"),
 )
 try:
     info = redisInstanceReviews.ft("reviews_idx").info()

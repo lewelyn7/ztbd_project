@@ -31,7 +31,7 @@ class ReviewDAO(ABC):
         pass
 
     @abstractmethod
-    def search(self, query: t.Dict[str,str], limit: int = 10) -> t.List[Review]:
+    def search(self, query: t.Dict[str,t.Any], limit: int = 10) -> t.List[Review]:
         pass
 
 def get_dao(db:str, session: Session = Depends(get_session)):
@@ -78,7 +78,7 @@ class ReviewDAOSql(ReviewDAO):
             q = q.filter(getattr(ReviewDB, attr) == value)
         q_results = q.limit(limit).all()
         results = [Review.from_orm(r) for r in q_results]
-
+        print(f"sql: {len(results)}")
         return results
 
 class ReviewDAOMongo(ReviewDAO):
@@ -115,7 +115,7 @@ class ReviewDAOMongo(ReviewDAO):
     def search(self, query: t.Dict[str, str], limit: int = 10) -> t.List[Review]:
         find_result = self.collection.find(query, limit=limit)
         result = [r for r in find_result]
-        print(result)
+        print(f"mongo: {len(result)}")
         result = [Review.from_orm(r) for r in find_result]
         return result
 
@@ -161,5 +161,5 @@ class ReviewDAORedis(ReviewDAO):
 
         key, value = [e for e in query.items()][0]
         ret = self.client.ft('reviews_idx').search(Query(value).limit_fields(key))
-        print(ret)
+        print(f"redis: {ret.total}")
         return []

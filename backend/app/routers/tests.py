@@ -14,8 +14,8 @@ from app.databases.mongo import db as mongodb
 from app.databases.sql import get_session, Session
 from app.models.review.review import ReviewDB
 from app.models.game.game import GameDB
-from app.models.author.author import AuthorDB
-
+from app.models.author.author import AuthorDB, AuthorCreate
+from random import random
 from app.core.utils import raise_409
 from dataclasses import dataclass
 import time
@@ -46,7 +46,7 @@ def test_case0(iterations: int, common_settings: CommonSettings = Depends(get_co
     times: t.List[float]= []
     for i in range(iterations):
         start = time.time()
-        result = common_settings.reviews_dao.search({"author_id": "string"})
+        result = common_settings.reviews_dao.search({"author_id": "not exists"})
         # print(len(result))
         end = time.time()
         time_in_ms = (end - start) * 1000
@@ -59,7 +59,7 @@ def test_case1(iterations: int, common_settings: CommonSettings = Depends(get_co
     times: t.List[float]= []
     for i in range(iterations):
         start = time.time()
-        result = common_settings.reviews_dao.search({"language": "schinesea"})
+        result = common_settings.reviews_dao.search({"language": "not exists"})
         # print(len(result))
         end = time.time()        
         time_in_ms = (end - start) * 1000
@@ -72,7 +72,13 @@ def test_case2(iterations: int, common_settings: CommonSettings = Depends(get_co
     times: t.List[float]= []
     for i in range(iterations):
         start = time.time()
-        result = common_settings.reviews_dao.search({"language": "not exist"})
+        result = common_settings.authors_dao.save(AuthorCreate(
+            id=f"idx{random():2.8f}",
+            num_of_games_owned=1,
+            num_reviews=10,
+            playtime_forever=120,
+            playtime_last_two_weeks=234,
+        ))
         # print(len(result))
         end = time.time()        
         time_in_ms = (end - start) * 1000
@@ -82,10 +88,22 @@ def test_case2(iterations: int, common_settings: CommonSettings = Depends(get_co
 
 @router.get("/3", response_model=SingleDbResult)
 def test_case3(iterations: int, common_settings: CommonSettings = Depends(get_common_settings)):
-    times: t.List[float]= []
+    times: t.List[float] = []
     for i in range(iterations):
         start = time.time()
-        result = common_settings.reviews_dao.search({"language": "\"ukr\""})
+        result = common_settings.reviews_dao.search({"content": "The"})
+        end = time.time()        
+        time_in_ms = (end - start) * 1000
+        times.append(time_in_ms)
+
+    return SingleDbResult(times=times)
+
+@router.get("/4", response_model=SingleDbResult)
+def test_case4(iterations: int, common_settings: CommonSettings = Depends(get_common_settings)):
+    times: t.List[float] = []
+    for i in range(iterations):
+        start = time.time()
+        result = common_settings.reviews_dao.search({"votes_funny": 12342342})
         end = time.time()        
         time_in_ms = (end - start) * 1000
         times.append(time_in_ms)

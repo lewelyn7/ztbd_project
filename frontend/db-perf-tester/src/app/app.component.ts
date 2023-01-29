@@ -14,7 +14,7 @@ import { max } from 'rxjs';
 })
 export class AppComponent {
   title = 'db-perf-tester';
-  chartSize: [number, number] = [700, 600]
+  chartSize: [number, number] = [500, 600]
   iterations: number = 10
   displayedColumns: string[] = ['database', 'max', 'min', 'mean','std_dev', 'q25', 'q50', 'q75'];
   tableData = [
@@ -56,16 +56,23 @@ export class AppComponent {
       },
       {
         name: "Case2",
-        description: "Not exist element",
+        description: "Add entity to the database",
         staticSettings:{
           url: environment.backendUrl + 'tests/2'
         }
       },
       {
         name: "Case3",
-        description: "Find review by part of opinion",
+        description: "Search on a big text field",
         staticSettings:{
           url: environment.backendUrl + 'tests/3'
+        }
+      },
+      {
+        name: "Case4",
+        description: "Search on a integer field",
+        staticSettings:{
+          url: environment.backendUrl + 'tests/4'
         }
       }
     ]
