@@ -16,9 +16,9 @@ export class AppComponent {
   title = 'db-perf-tester';
   chartSize: [number, number] = [700, 600]
   iterations: number = 10
-  displayedColumns: string[] = ['database', 'max', 'min', 'mean', 'q25', 'q50', 'q75'];
+  displayedColumns: string[] = ['database', 'max', 'min', 'mean','std_dev', 'q25', 'q50', 'q75'];
   tableData = [
-    {database: "mongodb", "max": 20, "min": 30, "mean": 10, "q25": 10, "q50": 10, "q75": 10}
+    {database: "mongodb", "max": 20, "min": 30, "mean": 10, 'std_dev': 10, "q25": 10, "q50": 10, "q75": 10}
   ]
   testResults: ChartResult = {data:[
     {
@@ -53,6 +53,20 @@ export class AppComponent {
         staticSettings:{
           url: environment.backendUrl + 'tests/1'
         }
+      },
+      {
+        name: "Case2",
+        description: "Not exist element",
+        staticSettings:{
+          url: environment.backendUrl + 'tests/2'
+        }
+      },
+      {
+        name: "Case3",
+        description: "Find review by part of opinion",
+        staticSettings:{
+          url: environment.backendUrl + 'tests/3'
+        }
       }
     ]
   
@@ -75,11 +89,13 @@ export class AppComponent {
       let q25 = quantile(values, .25);
       let q50 = quantile(values, .50);
       let q75 = quantile(values, .75);
+      const std_dev = Math.sqrt(values.map(x => Math.pow(x - mean, 2)).reduce((a, b) => a + b) / values.length)
       data.push({
         database: series.name,
         max: max,
         min: min,
         mean: mean,
+        std_dev: std_dev,
         q25: q25,
         q50: q50,
         q75: q75

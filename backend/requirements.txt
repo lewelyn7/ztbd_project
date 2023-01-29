@@ -2,7 +2,7 @@ uvicorn
 fastapi==0.88.0
 pydantic==1.10.2
 SQLAlchemy==1.4.45
-psycop2-binary==2.9.5
+psycopg2-binary==2.9.5
 pymongo==4.3.3
 progress==1.6
 aiohttp==3.8.3
