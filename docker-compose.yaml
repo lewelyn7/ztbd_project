@@ -2,11 +2,14 @@ version: "3.8"
 
 services:
   app:
-    build: ./backend
-    env_file:
-      - ./backend/.env
+    build: ./
     ports:
-      - "8000:8000"
+      - "80:8000"
+    environment:
+      REDIS_HOST: redis-database
+      MONGODB_URI: "mongodb://root:example@mongo-database:27017"
+      DATABASE_URI: "postgresql://postgres:example@sql-database:5432"
+    restart: on-failure
 
   redis-database:
     image: redislabs/redisearch
@@ -26,7 +29,7 @@ services:
     volumes:
     - sql-db:/var/lib/postgresql/data
 
-  mongo-databse:
+  mongo-database:
     image: mongo
     environment:
       MONGO_INITDB_ROOT_USERNAME: root
