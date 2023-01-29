@@ -18,7 +18,9 @@ export class AppComponent {
   iterations: number = 10
   displayedColumns: string[] = ['database', 'max', 'min', 'mean','std_dev', 'q25', 'q50', 'q75'];
   tableData = [
-    {database: "mongodb", "max": 20, "min": 30, "mean": 10, 'std_dev': 10, "q25": 10, "q50": 10, "q75": 10}
+    {database: "mongodb", "max": 20, "min": 30, "mean": 10, 'std_dev': 10, "q25": 10, "q50": 10, "q75": 10},
+    {database: "postgresql", "max": 20, "min": 30, "mean": 10, 'std_dev': 10, "q25": 10, "q50": 10, "q75": 10},
+    {database: "redis", "max": 20, "min": 30, "mean": 10, 'std_dev': 10, "q25": 10, "q50": 10, "q75": 10}
   ]
   testResults: ChartResult = {data:[
     {
@@ -36,20 +38,28 @@ export class AppComponent {
           {name: "1", value: 100},
           {name: "2", value: 250},
       ]
+    },
+    {
+      "name": "redis",
+      "series": [
+          {name: "0", value: 0},
+          {name: "1", value: 100},
+          {name: "2", value: 250},
+      ]
     }
   ]
 }
   testCases: TestCase[] = [
       {
         name: "Case0",
-        description: "Indexed search",
+        description: "Search in different DAO",
         staticSettings:{
           url: environment.backendUrl + 'tests/0'
         }
       },
       {
         name: "Case1",
-        description: "unindexed search",
+        description: "Search non existing element",
         staticSettings:{
           url: environment.backendUrl + 'tests/1'
         }
@@ -73,6 +83,34 @@ export class AppComponent {
         description: "Search on a integer field",
         staticSettings:{
           url: environment.backendUrl + 'tests/4'
+        }
+      },
+      {
+        name: "Case5",
+        description: "Remove existing element",
+        staticSettings:{
+          url: environment.backendUrl + 'tests/5'
+        }
+      },
+      {
+        name: "Case6",
+        description: "Add new element and then remove it",
+        staticSettings:{
+          url: environment.backendUrl + 'tests/6'
+        }
+      },
+      {
+        name: "Case7",
+        description: "Try to remove non existing data",
+        staticSettings:{
+          url: environment.backendUrl + 'tests/7'
+        }
+      },
+      {
+        name: "Case8",
+        description: "Long test",
+        staticSettings:{
+          url: environment.backendUrl + 'tests/8'
         }
       }
     ]

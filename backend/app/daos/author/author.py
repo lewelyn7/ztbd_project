@@ -60,6 +60,8 @@ class AuthorDAOSql(AuthorDAO):
         return Author.from_orm(author_sql)
     def delete(self, id: str):
         author_sql = self.session.query(AuthorDB).filter(AuthorDB.id == id).first()
+        if not author_sql:
+            return None
         self.session.delete(author_sql)
 
 
@@ -94,7 +96,8 @@ class AuthorDAOMongo(AuthorDAO):
             return ret
 
     def delete(self, id: str):
-        raise NotImplementedError()
+        self.collection.delete_one({'id': id})
+
 
 class AuthorDAORedis(AuthorDAO):
 
@@ -118,4 +121,5 @@ class AuthorDAORedis(AuthorDAO):
         return created
 
     def delete(self, id: str):
-        raise NotImplementedError()
+        self.client.json().delete(self.key_prefix + id)
+        # raise NotImplementedError()

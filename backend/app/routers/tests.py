@@ -47,7 +47,6 @@ def test_case0(iterations: int, common_settings: CommonSettings = Depends(get_co
     for i in range(iterations):
         start = time.time()
         result = common_settings.reviews_dao.search({"author_id": "not exists"})
-        # print(len(result))
         end = time.time()
         time_in_ms = (end - start) * 1000
         times.append(time_in_ms)
@@ -60,7 +59,6 @@ def test_case1(iterations: int, common_settings: CommonSettings = Depends(get_co
     for i in range(iterations):
         start = time.time()
         result = common_settings.reviews_dao.search({"language": "not exists"})
-        # print(len(result))
         end = time.time()        
         time_in_ms = (end - start) * 1000
         times.append(time_in_ms)
@@ -79,7 +77,6 @@ def test_case2(iterations: int, common_settings: CommonSettings = Depends(get_co
             playtime_forever=120,
             playtime_last_two_weeks=234,
         ))
-        # print(len(result))
         end = time.time()        
         time_in_ms = (end - start) * 1000
         times.append(time_in_ms)
@@ -110,6 +107,81 @@ def test_case4(iterations: int, common_settings: CommonSettings = Depends(get_co
 
     return SingleDbResult(times=times)
     
+@router.get("/5", response_model=SingleDbResult)
+def test_case5(iterations: int, common_settings: CommonSettings = Depends(get_common_settings)):
+    times: t.List[float]= []
+    for i in range(iterations):
+        author: AuthorCreate = AuthorCreate(
+            id=f"idx{random():2.8f}",
+            num_of_games_owned=1,
+            num_reviews=10,
+            playtime_forever=120,
+            playtime_last_two_weeks=234,
+        )
+        common_settings.authors_dao.save(author)
+        start = time.time()
+        common_settings.authors_dao.delete(author.id)
+        end = time.time()        
+        time_in_ms = (end - start) * 1000
+        times.append(time_in_ms)
+
+    return SingleDbResult(times=times)
+
+@router.get("/6", response_model=SingleDbResult)
+def test_case6(iterations: int, common_settings: CommonSettings = Depends(get_common_settings)):
+    times: t.List[float]= []
+    for i in range(iterations):
+        start = time.time()
+        author: AuthorCreate = AuthorCreate(
+            id=f"idx{random():2.8f}",
+            num_of_games_owned=1,
+            num_reviews=10,
+            playtime_forever=120,
+            playtime_last_two_weeks=234,
+        )
+        common_settings.authors_dao.save(author)
+        common_settings.authors_dao.delete(author.id)
+        end = time.time()        
+        time_in_ms = (end - start) * 1000
+        times.append(time_in_ms)
+
+    return SingleDbResult(times=times)
+
+@router.get("/7", response_model=SingleDbResult)
+def test_case7(iterations: int, common_settings: CommonSettings = Depends(get_common_settings)):
+    times: t.List[float]= []
+    for i in range(iterations):
+        start = time.time()
+        common_settings.authors_dao.delete(f"idx{random():2.8f}")
+        end = time.time()        
+        time_in_ms = (end - start) * 1000
+        times.append(time_in_ms)
+
+    return SingleDbResult(times=times)
+
+@router.get("/8", response_model=SingleDbResult)
+def test_case8(iterations: int, common_settings: CommonSettings = Depends(get_common_settings)):
+    times: t.List[float]= []
+    for i in range(iterations):
+        start = time.time()
+        author: AuthorCreate = AuthorCreate(
+            id=f"idx{random():2.8f}",
+            num_of_games_owned=1,
+            num_reviews=10,
+            playtime_forever=120,
+            playtime_last_two_weeks=234,
+        )
+        common_settings.reviews_dao.search({"author_id": author.id})
+        common_settings.authors_dao.delete(author.id)
+        common_settings.authors_dao.save(author)
+        common_settings.reviews_dao.search({"author_id": author.id})
+        common_settings.authors_dao.delete(author.id)
+        end = time.time()        
+        time_in_ms = (end - start) * 1000
+        times.append(time_in_ms)
+
+    return SingleDbResult(times=times)
+
 @router.get("/stats")
 def get_stats(sql_session: Session = Depends(get_session)):
     stats = {
